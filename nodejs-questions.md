@@ -51,6 +51,52 @@ Hầu hết các phương thức synchronous trong standard library của Nodejs
 #### Giải pháp
 - Do đó, một thread pool được sinh ra để hỗ trợ những I/O functions - mà không thể được giải quyết trực tiếp bằng hardware asynchronous I/O utils như epoll/kqueue/event ports/IOCP. 
 - Và bây giờ thì chúng ta biết được là không phải tất cả I/O functions xảy ra trong thread pool. NodeJS sẽ làm việc mà nó có thể làm tốt nhất là xử lí hầu hết các I/O sử dụng non-blocking và asynchronous hardware I/O, nhưng với những loại I/O blocks hoặc phức tạp thì nó dùng thread pool.
+  
+### OK giờ gom tất cả lại nè
+- Nói chung là trong thực tế thì rất khó để hỗ trợ tất cả các loại I/O (file I/O, network I/O, DNS, ...) trên tất cả các hệ điều hành khác nhau. Một vài I/O có thể được xử lí bằng các native hardware implementations trong khi vẫn giư được tính bất đồng bộ, và có một vài loại I/O phải được xử lí trong thread pool thì mới đảm bảo được tính chất bất đồng bộ.
+
+> Một quan niệm sai lầm của các developer NodeJS là Node thực hiện tất cả các tác vụ I/O ở thread pool.
+- Để quản lí qúa trình này trong việc hỗ trợ đa nền tảng I/O, cần có một lớp trừu tượng gói gọn tất cả các công việc phức tạp và liên nền tảng này lại, và chỉ thể hiện ra ngoài một API tổng quát ở tầng trên của Node.
+> Và tadaaaa -> `libuv`
+- Trên trang chủ của libuv:
+  - libuv là một thư viện hỗ trợ đa nền tảng được viết cho NodeJS. Nó được thiết kế trên event-driven asynchronous I/O model.
+  - Thư viện này cung cấp nhiều hơn một lớp trừu tượng đơn giản đối với những cơ chế I/O polling khác nhau: 'handles' và 'streams' cung cấp một lớp trừu tượng high-level cho sockets và những entities khác; cross-platform file I/O và threading functionality cũng được cung cấp, bên cạnh những thứ khác.
+ - Rồi giờ sẽ xem cách mà libuv được xây dựng thông qua sơ đồ bên dưới:
+ - <img src='https://miro.medium.com/max/1020/1*THT6G99kiIEPZ3Mm6N09Bw.png' />
+ - Bây giờ thì chúng ta biết được là Event Demultiplexer không phải là một thực thể duy nhất mà là một collection của những I/O processing API trừu tượng bới libuv và cung cấp cho tầng trên của NodeJS. Libuv cung cấp toàn bộ `event loop` bao gồm cả cơ chế event queuing.
+### Bây giờ mình tìm hiểu tiếp về Event Queue
+- Event queue được xem là một data structure nơi mà tất cả các event được enqueued và xử lí bởi event loop một cách tuần tự cho dến khi queue rỗng. Nhưng cách nó xảy ra trong Node hoàn toàn khác với cách mà reactor pattern mô tả. 
+> Có nhiều hơn một queue trong NodeJS để chứa các loại event khác nhau.
+> Sau khi xử lí một phase và trước khi move sang phase tiếp theo, event loop sẽ xử lí 2 queue trung gian cho đến khi không còn một item nào còn lại trong những queue này.
+
+- Có 4 loại queue dược xử lí bởi native libuv event loop.
+  - Expired timers và interval queue - bao gồm những callback của các timers đến thời hạn `setTimeout` hoặc những hàm interval `setInterval`
+  - IO Events Queue - Những I/O events đã hoàn thành
+  - Immediates Queue - Callbacks được thêm vào bằng `setImmediate`
+  - Close Handlers Queue - Bất kì `close` event handler (ví dụ như socket.on('close', ...).
+ 
+ > Lưu ý à mặc dù những cái ở trên đều được mô tả đơn giản bằng từ 'Queue' nhưng chúng thực sự là những data structure khác nhau (ví dụ timer được lưu trong một min-heap).
+ 
+ - Bên cạnh 4 queue chính, thì còn có 2 queue trung gian rất thú vị được xử lí bởi Node. Mặc dù những queue này không phải là một phần của libuv mà là của NodeJS: 
+  - Next Ticks Queue - Callbacks được thêm vào từ `process.nextTick`
+  - Other Microtasks Queue - Bao gồm những microtasks như resolved promise callbacks.
+ ### Vậy nó hoạt động như thế nào?
+ - Như bạn thấy trong sơ đồ ở dưới, Node bắt đầu Event Loop bằng cách check xem có timer nào đến thời hạn không (ở trong timers queue), và đi qua mỗi queue trong từng step trong khi vẫn duy trì một tham chiếu counter cho tất cả các item được xử lí. Xong khi xử lí xong close handlers queue, vòng lặp ẽ thoát. Xử lí mỗi queue trong event loop được xem như là một phase của nó.
+ - <img src='https://miro.medium.com/max/951/1*aU5dr98pxTsZ4AMfnA6lNA.png' />
+ - Còn về 2 queue trung gian được bôi đỏ, cho đến khi một phase hoàn thành thì event loop sẽ check 2 queue trung gian đó xem có tồn tại item nào không. Nếu có thì event loop sẽ lập tức xử lí nó cho đến khi 2 queue trung gian này trống rỗng thì thôi. Rồi sau đó event loop sẽ tiếp tục qua phase tiếp theo.
+ > Ví dụ nhe: Event loop hiện tại xử lí immediates queue có 5 handlers cần xử lí. Trong khi đó, 2 handlers được thêm vào next tick queue. Một khi event loop hoàn thành 5 handlers trong immediates queue, event loop check là còn có 2 item trong next tick queue cần được xử lí trước khi move sang close handlers queue. Nó sẽ thực thi tất cả handlers trong next tick queue và sau đó chuyển sang xử lí close handlers queue.
+ 
+ ### Next tick queue và Other microtasks queue
+ - Next tick queue có ưu tiên cao hơn là Other Microtasks queue. Mặc dù chúng đều được xử lí giữa 2 phase của event loop khi libuv giao tiếp với những lớp cao hơn của NodeJS ở cuối mỗi phase. Để ý là next tick queue có màu đỏ đậm tượng trưng cho việc next tick queue phải được xử lí cho xong hết rồi mới tới xử lí resolved promises trong microtasks queue.
+ > Ưu tiên next tick hơn resolved promises chỉ áp dụng với native JS promises cung cấp bởi V8. Nếu bạn sử dụng thư viện khác như `q` hay `bluebird`, thì bạn sẽ nhận được kết quả khác.
+ > `q` và `bluebird` cũng có cách xử lí promise khác.
+ 
+ - Điều này dẫn đến một vấn đề là IO starvation (bỏ đói IO), cái này thực ra có nghĩa là nếu mà cứ thêm vào next tick queue mãi thì event loop sẽ chẳng thể chuyển tới phase tiếp theo được, cái này hay làm block event loop nè.
+ > Để ngăn chặn việc này thì người ta có dùng một maximum limit cho next tick queue có thể set thông qua `process.maxTickDepth`, nhưng mà ở phiên bản sau này thì bị remove òi.
+ 
+ - Giờ nhìn lại kiến trúc của Node tí và xem libuv ở đâu
+ - <img src='https://miro.medium.com/max/1120/1*-L-Atb5LI_j0nvcM0s43pA.jpeg' />
+ 
  --------------------------------------------------------------------
 
 - Event loop sau khi start thì sẽ chạy một vòng lặp vô hạn ở phase poll 
