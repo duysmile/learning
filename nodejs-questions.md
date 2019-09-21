@@ -1,5 +1,6 @@
 # nodejs
 0. Blocking và Non-blocking I/O?
+0.1. Nodejs hay javascript xử lí promise như thế nào để chạy bất đồng bộ mà không dùng thread? `căng nha`
 1. Nodejs xử lí request như thế nào?
 2. Single threaded Event loop hoạt động như thế nào?
 3. Nếu register một promise thì node sẽ xử lí ntn?
@@ -19,6 +20,15 @@ Hầu hết các phương thức synchronous trong standard library của Nodejs
   - Javascript thực thi trong Node là Single threaded, do đó xử lí đồng thời (concurrency)
   dựa vào khả năng của EventLoop để thực thi Javascript callback sau khi hoàn thành một công việc khác.
   - Bất kì đoạn code nào muốn chạy concurrent phải cho phép eventloop tiếp tục chạy khi các non-Javascript operations như I/O đang xảy ra.
+  
+## Xử lí promise nè!!!
+- Đầu tiên là mình phải hiểu răn là concurrency, răn là paralleism?
+- Ok, đầu tiên là `concurrency` chỉ áp dụng khi có 2 hay nhiều hơn nhiệm vụ. Khi mà một app có khả năng thực thi 2 task một cách ảo lòi cùng lúc, chúng ta gọi nó là concurrent app. Mặc dù những task này nhìn thì giống như là đồng thời nhưng thực chất hông phải như thế. Chúng tận dụng tính năng CPU time-slicing của OS, nơi mà mỗi task chạy một phần của nó và rơi vào trạng thái chờ. Khi task đầu tiên rơi vào trạng thái chờ thì CPU sẽ thực hiện task thứ 2 để hoàn thành một phần của nó. OS dựa trên độ ưu tiên task, do vậy, việc assign CPU và những tài nguyên khác như memory, lần lượt cho từng task và cho chúng cơ hội để hoàn thành. Cho nên đối với end user thì giống như là chúng được thực hiện song song, nhưng mà đây gọi là `Concurrency`.
+- Rồi tiếp đến là `Parallelism`. Thì dịch ra là xử lí song song, ở đây ko yêu cầu phải tồn tại 2 task. Nó thực sự chạy nhiều phần của một task hoặc là nhiều task, cùng một lúc sử dụng multi-core của CPU, bằng cách gán một core cho một task hoặc là sub-task. Xử lí song song yêu cầu phần cứng với multiple processing units. Với single core thì chỉ có thể chạy concurrency chớ còn parallel thì chịu.
+- Ok vậy giờ thì 2 cái này khác nhau như thế nào, khá rõ ràng rồi cơ mà mình viết thêm chút :))
+  - `Concurrency` là khi 2 task có thể start, run, và complete trong một overlapping time periods(khoảng thời gian chồng chéo nhau).  Còn `Parallelism` là khi các tasks chạy cùng lúc trên nhiều core.
+  - `Concurrency` là thành phần của quá trình thực thi độc lập, trong khi `Paralleism` là việc thực thi đồng thời các tính toán.
+  - `Concurrency` là xử lí nhiều thứ cùng một lúc (dealing with lots of things at once). Còn `Parallelism` là về việc làm nhiều thứ cùng lúc (
   
 ## Nodejs xử lí request như thế nào?
 - Nodejs hoạt động dựa trên một event-drive model với một Event Demultiplexer (trình phân tích sự kiện) và một Event Queue.
