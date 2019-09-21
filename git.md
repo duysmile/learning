@@ -1,0 +1,26 @@
+# learning git
+- git init
+- git add
+- git add --patch
+- git add --interactive
+- git commit -m
+- git push \<remote\> \<branch\>
+- git branch
+- git fetch
+- git checkout -- \<file\>
+- git checkout \<branch\>
+- git checkout -b \<new-branch\>
+- git pull \<remote\> \<branch\>
+- git merge \<branchA\> \<branchB\>
+- git log
+- git reflog
+- git show \<commit-id\>
+- git diff
+- git reset --soft \<commit-id\> 
+- git reset --mixed \<commit-id\>
+- git reset --h
+- git revert \<commit-id\>
+- git remote add \<remote-name\> \<link-remote\>
+- git remote rm \<remote-name\>
+- git remote -v
+- 
