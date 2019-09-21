@@ -43,7 +43,14 @@ Hầu hết các phương thức synchronous trong standard library của Nodejs
 - Event Demultiplexer không tồn tại trong thực tế, nó chỉ là một khái niệm trừu tượng trong Reactor patter.
 - Thực tế thì event demultiplexer được implemented trong nhiều hệ thống khác nhau với tên gọi là epoll trong Linux, kqueue trong BSD systems (MACOS), event ports trong Solaris, IOCP(Input Output Competion Port) trong Windowwns.
 - Nodejs tận dụng những chức năng low-level non-blocking, asynchronous hardware I/O được cung cấp bởi những implementations ở trên.
- 
+
+#### Sự phức tạp trong File I/O
+- Không phải tất cả các loại I/O đều sử dụng những implementations ở trên. Mặc dù trong cùng OS platform, thì việc hỗ trợ những loại I/O cũng khác nhau và cũng rất phức tạp. Thông thường, network I/O được thực hiện theo các non-blocking sử dụng epoll, kqueue, event ports và IOCP, những File I/O lại phức tạp hơn nhiều. Trong những hệ thống cụ thể như Linux không hoàn toàn hỗ trợ việc truy cập file bất đồng bộ. Và có những giới hạn trong việc file system event notifications/signaling với kqueue trong MACOS systems. 
+#### Sự phức tạp trong DNS
+- Tương tự với file I/O, chức năng DNS được cung cấp trong Node cũng rất phức tạp. Vì DNS functions trong Node như dns.lookup truy cập vào file cấu hình hệ thống như nsswitch.conf, resolv.conf và /etc/hosts.
+#### Giải pháp
+- Do đó, một thread pool được sinh ra để hỗ trợ những I/O functions - mà không thể được giải quyết trực tiếp bằng hardware asynchronous I/O utils như epoll/kqueue/event ports/IOCP. 
+- Và bây giờ thì chúng ta biết được là không phải tất cả I/O functions xảy ra trong thread pool. NodeJS sẽ làm việc mà nó có thể làm tốt nhất là xử lí hầu hết các I/O sử dụng non-blocking và asynchronous hardware I/O, nhưng với những loại I/O blocks hoặc phức tạp thì nó dùng thread pool.
  --------------------------------------------------------------------
 
 - Event loop sau khi start thì sẽ chạy một vòng lặp vô hạn ở phase poll 
