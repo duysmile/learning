@@ -1,6 +1,6 @@
 # nodejs
 0. Blocking và Non-blocking I/O?
-0.1. Nodejs hay javascript xử lí promise như thế nào để chạy bất đồng bộ mà không dùng thread? `căng nha`
+0. Nodejs hay javascript xử lí promise như thế nào để chạy bất đồng bộ mà không dùng thread? `căng nha`
 1. Nodejs xử lí request như thế nào?
 2. Single threaded Event loop hoạt động như thế nào?
 3. Nếu register một promise thì node sẽ xử lí ntn?
@@ -28,7 +28,10 @@ Hầu hết các phương thức synchronous trong standard library của Nodejs
 - Ok vậy giờ thì 2 cái này khác nhau như thế nào, khá rõ ràng rồi cơ mà mình viết thêm chút :))
   - `Concurrency` là khi 2 task có thể start, run, và complete trong một overlapping time periods(khoảng thời gian chồng chéo nhau).  Còn `Parallelism` là khi các tasks chạy cùng lúc trên nhiều core.
   - `Concurrency` là thành phần của quá trình thực thi độc lập, trong khi `Paralleism` là việc thực thi đồng thời các tính toán.
-  - `Concurrency` là xử lí nhiều thứ cùng một lúc (dealing with lots of things at once). Còn `Parallelism` là về việc làm nhiều thứ cùng lúc (
+  - `Concurrency` là xử lí nhiều thứ cùng một lúc (dealing with lots of things at once). Còn `Parallelism` là về việc làm nhiều thứ cùng lúc (do lots of things at once).
+
+- Rồi giờ là promise (hay là việc xử lí bất đồng bộ trong JS). Bắt đầu là promise được thiết kế để giúp việc quản lí các tác vụ bất đồng bộ trong JS. Bản thân promise thì k cần dùng nhiều threads để thực hiện nó. Chúng là những objects mà về bản chất cung cấp bookkeeping(sổ sách kế toán - đại loại rứa) cho asynchronous operations - giữ những cờ trạng thái, giá trị kết quả và những cái lắng nghe sự kiện cho chuyển đổi trạng thái (listeners for a state transition). Tất cả những thứ này đều có thể dễ dàng được thực hiện bởi single threaded Javascript.
+- Do đó, miễn là bạn có asynchronous operations, bạn có thể tận dụng những cái lợi ích từ promise và ko cần thread để implement mấy cái đó.
   
 ## Nodejs xử lí request như thế nào?
 - Nodejs hoạt động dựa trên một event-drive model với một Event Demultiplexer (trình phân tích sự kiện) và một Event Queue.
