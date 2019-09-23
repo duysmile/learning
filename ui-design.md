@@ -1,0 +1,17 @@
+- Solid and Gradient fill
+- Color palettes
+- Fonts
+- Icons: flaticon.com
+- Shapes: Rectangle, Oval/Circle
+- Border & Spacing
+- Layers
+- Mask
+- Opacity
+- Shadow effect
+- Blur effect
+- Consistency -> tinh thong nhat
+- Reusability: Symbols, group components
+- Bitmap vs Vector
+- Grid - extension bootstrap grid overlay, show layout in ui design tool
+- Responsive design -> grid support
+- invisionapp.com, behance, dribble, themeforest.net, goodui.org
