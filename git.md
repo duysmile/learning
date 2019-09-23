@@ -23,4 +23,23 @@
 - git remote add \<remote-name\> \<link-remote\>
 - git remote rm \<remote-name\>
 - git remote -v
-- 
+- git clone
+- git pull
+- create pull request - review code:
+  - review online
+  - review code offline: git fetch \<remote\> \<branch\>
+- git branch -D \<branch\> : remove branch on local
+- resolve conflict: 
+  - `using rebase` 
+  > git checkout \<brach-conflicted\>
+  > git rebase \<branch-to-merge\>
+  - Eg: resolve conflicts in branch feature/add-payment-method to merge to master
+    - git checkout master
+    - git pull origin master
+    - git checkout feature/add-payment-method
+    - git rebase master
+    - resolve conflicts in editor
+    - git add \<conflicted-file\>
+    - git rebase --continue
+    - git push origin feature/add-payment-method -f
+   - `using merge`
