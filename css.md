@@ -18,6 +18,7 @@
   - @font-face => to define user-defined fonts
 - live-server npm
 - padding
+- box-sizing: border-box -> padding se k thay doi kich thuoc div
 - margin
 - border: 
   - border-width: border-right-widht, border-left-width, ...
