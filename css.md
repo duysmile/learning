@@ -1,1 +1,42 @@
-
+# CSS
+- Color in CSS: #FFF, rgb(0, 0, 0), rgba(0, 0, 0, 0.5)
+- Styling text: 
+  - color
+  - text-align
+  - text-decoration
+  - text-transform
+  - text-indent
+  - letter-spacing
+  - word-spacing
+  - text-shadow: x y color blur
+  - line-height
+- Custom fonts: 
+  - font-size
+  - font-weight
+  - font-style
+  - font-family: Google Fonts
+  - @font-face => to define user-defined fonts
+- live-server npm
+- padding
+- margin
+- border: 
+  - border-width: border-right-widht, border-left-width, ...
+  - border-style: ...
+  - border-color: ...
+  - border-radius
+- background-color:
+  - color
+  - gradient: css gradient generator, cssgradient.io
+  - transparent
+- background (* is default value)
+  - background-image: url(...)
+  - background-repeat: repeat-x | repeat-y | no-repeat | repeat*  => abstract pattern
+  - background-size: % | contain | cover | auto*
+  - background-position: x y | center
+  - background-attachment: scroll* | fixed
+- icons: size, animation, ...
+- styling links:
+  - :link
+  - :hover
+  - :visited
+  - :active
