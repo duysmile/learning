@@ -40,3 +40,27 @@
   - :hover
   - :visited
   - :active
+-  lists & tables
+- inline & block
+- combinators:
+  - class: .<classname>
+  - descendant selector(space): .<parent> .<child> 
+  - child selector(>)
+  - adjacent sibling selector(+)
+  - general sibling selector(~)
+- pseudo classes:
+  - :before
+  - :after
+  - :nth-child
+  - :last-child
+  - :first-child
+  - :focus
+  - :hover
+ - flex:
+  - flex-direction
+  - justify-content
+  - align-items (stretch)
+  - flex-basis: ...px (fix by content)
+  - flex-grow: 0*
+  - flex-shrink: 1*
+  - order: 0 | 1 | 2 | ...
