@@ -64,3 +64,9 @@
   - flex-grow: 0*
   - flex-shrink: 1*
   - order: 0 | 1 | 2 | ...
+- Code CSS:
+  - Phan tich
+  - Dat ten
+  - Code ...
+  -> easy :v
+ 
