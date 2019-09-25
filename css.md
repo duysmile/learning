@@ -49,6 +49,8 @@
   - child selector(>)
   - adjacent sibling selector(+)
   - general sibling selector(~)
+  - attribute selector([])
+  - hint: css selector cheatsheet
 - pseudo classes:
   - :before
   - :after
@@ -70,4 +72,28 @@
   - Dat ten
   - Code ...
   -> easy :v
- 
+- position: 
+  - relative: top bottom left right
+  - fixed: top bottom left right
+  - absolute: -> match with nearest non-static position
+- float: left, right
+- clear: left, right, both
+- CSS specificity
+- 2D transform: tympanus.net
+  - translate(X, Y)
+  - rotate(...deg)
+  - scale(1*)
+  - matrix
+  - skew
+- transition: \<property\> \<duration\> \<timing-function\> ...
+  - easings.net
+- media query:
+  - @media (min-width: ...px)
+- grid:
+  - grid-template-columns: ...px | ...fr (fraction)
+  - grid-column: \<start\>/\<end\>
+- css-tricks
+- px vs em vs rem
+  - px: pixel
+  - em: ti le vs parent element
+  - rem: ti le vs root element (root === html)
