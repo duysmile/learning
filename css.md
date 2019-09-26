@@ -1,4 +1,5 @@
 # CSS
+- Debug on devices: **browserstack**
 - Color in CSS: #FFF, rgb(0, 0, 0), rgba(0, 0, 0, 0.5)
 - Styling text: 
   - color
