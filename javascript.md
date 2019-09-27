@@ -25,3 +25,16 @@
   - inheritance
   - override
   - super
+  - static
+- rest: ...
+  - function(a, ...rest) {} -> rest: array, arguments: array-like object
+- spread: ...
+  - shallow cloning: chỉ clone một lớp của object
+  - E.g: 
+    const a = \[1, 2, 3, 4, 5\];
+    const b = \[0, ...a, 6\];
+- value types and reference types.
+- closure
+- higher order function: là hàm nhận vào 1 hàm làm tham số hoặc là trả về một hàm.
+- destructuring
+  - có thể dùng default, vd: const \[a, b = 20\] = \[1\];
