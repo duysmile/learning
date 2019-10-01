@@ -26,7 +26,7 @@
   - add - commit - pull - merge - fix conflicts - push
 - Naming style: 
   - Nodejs:
-    - directory: snake-case
+    - directory: kebab-case
     - variable: camelCase
     - class: PascalCase
     - constant: UPPERCASE
