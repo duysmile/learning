@@ -7,3 +7,6 @@
 	- dispatch: fire off a new action
 	- subscribe: fire a callback everytime there's a new action after a reducer's action
 - react-redux bindings
+- connect(mapStateToProps, mapDispatchToProps)(\<Component\>)
+	- mapStateToProps: map current state of store to props of component
+	- mapDispatchToProps: map dispatch() of store to props of component
