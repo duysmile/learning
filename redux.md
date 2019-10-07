@@ -9,7 +9,9 @@
 	- Implement undo/redo functionality easily
 - React and Redux have a lot of ideas and traits in common:
 	- Functional composition paradigm: React composes views while Redux composes pure reducers. Output is predictable given the same set of input.
-	...
+	- Easy to reason about: Our code behaves in ways we expect it to, and when there are problems, we can find them easily.
+	- Layered structure: It is relatively easy to write tests for pure functions. You have to centralize changes to your app within the reducer, and the only way to trigger a change is to dispatch an action.
+	- Development experience: 
 - stores:
 	- plain **JS object** that represent the current state of app
 	- **reducer** to describe how incoming action modify your state, should not have any side-effects, that is, if you call a reducer with the same state and the same action, you should always get the same result. It's also good practice to encapsulate as much of your application logic as possible in reducers, because, since your reducers don't rely on side-effects or global state, they're really easy to test, debug, and refactor.
