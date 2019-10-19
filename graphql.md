@@ -8,7 +8,7 @@ Types:
   - String
   - Boolean
   - ID(serialize ra thì giống String)
-  - Một vài trường hợp thì có thể tạo thêm những [customer scalar types](https://www.apollographql.com/docs/apollo-server/schema/scalars-enums/)
+  - Một vài trường hợp thì có thể tạo thêm những [custom scalar types](https://www.apollographql.com/docs/apollo-server/schema/scalars-enums/)
 - Object types: giống như định nghĩa object bên JS thôi
 - `Query` type: định nghĩa chính xác những GraphQL queries(đọc dữ liệu) mà client có thể yêu cầu. Nói chung thì cũng giống như object type nhưng mà luôn có tên là Query.
 - `Mutation` type: có cấu trúc và mục đích khá giống `Query`. Nhưng khác vs Query là để đọc(read operations), thì Mutation dùng để ghi(write operations).
@@ -55,7 +55,13 @@ interface MutationResponse {
 --------
 ### Custom scalars and enums
 
+GraphQL gồm nhiều kiểu vô hướng (scalar): Int, Float, String, Boolean và ID. Những kiểu này thì phần lớn đã cover được hết các case, nhưng cũng cần thêm vài loại dữ liệu atomic, hoặc để thêm validation vào các types có sẵn. Để làm được việc này thì GraphQL cho phép custom scalar types. Enumerations thì tương tự như custom scalars nhưng mà có giới hạn số giá trị, được định nghĩa trước trong một list strings.
 
+Custom scalars:
+- Để định nghĩa một custom scalar thì dùng cú pháp ni:
+```
+scalar MyCustomScalar
+```
 
 
 
