@@ -457,6 +457,85 @@ query GetBooks {
 }
 ```
 
+## Using schema directives
+
+Dùng schema directive đển chuyển đổi schema types, fields, và arguments
+
+Một directive là một định danh với dấu `@` ở trước, tùy chọn theo sau bởi một list tên các arguments, có thể xuất hiện sau hầu hết bất cứ cú pháp trong GraphQL Query hoặc schema languages. Đây là một ví dụ:
+```graphql
+directive @deprecated(
+  reason: String = "No longer supported"
+) on FIELD_DEFINITION | ENUM_VALUE
+
+type ExampleType {
+  newField: String
+  oldField: String @deprecated(reason: "Use `newField`.")
+}
+```
+
+Định nghĩa directive theo cú phá `directive @deprecated ... on ...`
+và sử dụng nó `@deprecated(reason: ...)`
+
+Default Directives:
+- GraphQL cung cấp một vài default directives như: `@deprecated`, `@skip`, và `@include`.
+  - @deprecated (reason: String): đánh dấu là field này đã bị deprecated kèm vs message.
+  - @skip (if: Boolean!): việc thực thi GraphQL bỏ qua field nếu đúng bằng cách k gọi resolver.
+  - @include (if: Boolean!): gọi resolver cho trường chú thích(annotated field) nếu đúng
+
+Using custom schema directives
+- Để dùng một custom schema directive, pass class được implemented cho Apollo Server thông qua tham số `schemaDirectives`, là một object mà map directive name với directive implementations:
+```javascript
+const { ApolloServer, gql, SchemaDirectiveVisitor } = require('apollo-server');
+const { defaultFieldResolver } = require('graphql');
+
+// Create(or import) a custom schema directive
+class UpperCaseDirective extends SchemaDirectiveVisitor {
+  visitFieldDefinition(field) {
+    const { resolve = defaultFieldResolver } = field;
+    field.resolve = async function (...args) {
+      const result = await resolve.apply(this, args);
+      if (typeof result === 'string') {
+        return result.toUpperCase();
+      }
+      
+      return result;
+    }
+  }
+}
+
+// Construct a schema using GraphQL schema language
+const typeDefs = gql `
+  directive @upper on FIELD_DEFINITION
+  
+  type Query {
+    hello: String @upper
+  }
+`;
+
+// Provide resolver functions for your schema fields
+const resolvers = {
+  Query: {
+    hello: (parent, args, context) => {
+      return 'hello, world';
+    }
+  }
+};
+
+// Add directive to the ApolloServer constructor
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  schemaDirectives: {
+    upper: UpperCaseDirective,
+  }
+});
+
+server.listen().then(({ url }) => {
+  console.log(`🚀 Server ready at ${url}`)
+});
+```
+
+
 
 
 
