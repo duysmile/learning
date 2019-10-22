@@ -615,6 +615,136 @@ SchemaDirectiveVisitor.visitShemaDirectives(schema, {
 [Xem thêm ví dụ](https://www.apollographql.com/docs/apollo-server/schema/creating-directives/#uppercasing-strings)
 
 ### Fetching data with resolvers
+Resolver map
+- Để respond cho queries, một schema cần có những resolve functions cho tất cả các fields. Những function này được gọi là "resolvers map". Và chúng có liên hệ với những schema fields và types.
+```javascript
+const { gql } = require('apollo-server');
+const { find, filter } = require('lodash');
+
+const schema = gql `
+  type Book {
+    title: String
+    author: Author
+  }
+
+  type Author {
+    books: [Book]
+  }
+
+  type Query {
+    author: Author
+  }
+`;
+
+const resolvers = {
+  Query: {
+    author(parent, args, context, info) {
+      return find(authors, { id: args.id });
+    },
+  },
+  Author: {
+    books(author) {
+      return filter(books, { author: author.name });
+    },
+  },
+};
+```
+
+- Với resolver map trên, thì query `{ author { books } }` sẽ gọi resolver `Query.author` trước là trả keetsquar tới `Author.books`. Kết quả trả về sẽ bao gồm giá trị của` Author.books` được lồng dưới `data.author.books`.
+
+- Lưu ý là bạn không cần phải đặt tất cả các resolver trong một object. Dựa thêm phần [modularizing resolvers](https://www.apollographql.com/docs/apollo-server/data/data/#modularizing-resolvers) để học cách combine nhiều resolvers map thành một.
+
+Resolver type signature
+- Ngoài giá trị của parent resolvers, thì resolvers còn nhận thêm những tham số khác. Signature đẩy đủ của resolver function gồm 4 tham số theo thứ tự như sau: `(parent, args, context, info)` và có thể trả về một object hoặc một Promise. Một promise được resolve thì những children resolver sẽ tiếp tục thực thi. Điều này rất hữu ích khi fetching data từ backend.
+
+- Tham số resolver dựa theo naming conventions được mô tả chi tiết sau:
+1. `parent`: là object bao gồm kết quả được trả về từ resolver ở parent filed, hoặc trong trường hợp ở top-level Query field, `rootValue` được truyền vào từ config của server. Tham số này cho phép lồng nhau.
+
+2. `args`: một object với những tham số được truyền vào field trong query. Ví dụ, nếu field được gọi với `query{ key(arg: "you meant") }`, thì `args` object sẽ là `{ args: "you meant" }`.
+
+3. context: đây là một object chia sẻ với tất cả các resolvers trong một query cụ thể, và được dùng để chứa state của mỗi request, bao gồm thông tin authentication, dataloader instances, và bất cứ thứ gì khác cần được đưa vào khi resolving query. Đọc thêm [bài viết này](https://www.apollographql.com/docs/apollo-server/data/data/#context-argument) để hiểu rõ hơn về khi nào và cách sử dụng context.
+
+4. `info`: tham số này chứa thông tin về trạng thái thực thi (execution state) của query, bao gồm field name, path tới field từ root, và nhiều thứ nữa. Nó chỉ là document trong GraphQL, nhưng được mở rộng với thêm nhiều tính năng bởi những modules khác, như [apollo-cache-control](https://github.com/apollographql/apollo-server/tree/master/packages/apollo-cache-control).
+
+Resolver results
+- Resolvers trong GraphQL có thể trả về nhiều loại kết quả khác nhau: 
+1. `null` hoặc `undefinded` - nó chỉ ra là object không được tìm thấy. Nếu schema của bạn cho phép field đó có thể null, thì kết quả sẽ có thể là null, Nếu field đó là `non-null`, thì kết quả sẽ 'bubble up' tới trường nullable gần nhất và kết quả đó sẽ được set thành null. Điều này đảm bảo là API consumer sẽ không bao giờ nhận một giá trị `null` khi mà nó mong đợi một kết quả.
+
+2. Một mảng - chỉ đúng nếu schema chỉ định là kết quả là một list. Và sub-selection của query sẽ chạy một cho mỗi item trong mảng.
+
+3. Một promise - resolver thường thực thi bất đồng bộ như là fetching data từ một database hay một backend API, do đó nó sẽ trả về promises. Có thể kết hợp với array, do đó resolver có thể trả về một promise mà resolve thành một array, hoặc một array promises, và cả hai điều được xử lí hết.
+
+4. Một giá trị scalar hoặc object - một resolver cũng có thể trả về những loại giá trị này, mà không có ý nghĩa đặc biệt nào mà chỉ được truyền vào bất kỳ nested resolvers nào, như được mô tả trong phần tiếp theo.
+
+
+Parent argument
+- Tham số đầu tiên cho mỗi resolver, `parent`, có thể gây confuse một chút, nhưng sẽ dễ thôi nếu mà bạn xem ví dụ GraphQL query dưới đây:
+```graphql
+query {
+  getAuthor(id: 5){
+    name
+    posts {
+      title
+      author {
+        name # this will be the same as the name above
+      }
+    }
+  }
+}
+```
+
+- Mỗi GraphQL query là một cây functions được gọi ở server. Do đó `parent` chưa kết quả của parent resolver, trong trường hợp này thì là:
+1. `parent` trong `Query.getAuthor` sẽ là bất kì config server nào được truyền vào cho `rootValue`.
+
+2. `parent` trong `Author.name` và `Author.posts` sẽ là kết quả từ `getAuthor`, giống như một Author object từ backend.
+
+3. `parent` trong `Post.title` và `Post.author` sẽ có một item từ mảng kết quả `posts`.
+
+4. `parent` trong `Author.name` là kết quả từ `Post.author` ở trên.
+
+- Mỗi resolver function được gọi tương ứng với phần lồng nhau trong query. Để hiểu hơn về sự chuyển tiếp từ query tới resolvers từ những góc nhìn khác thì có thể tham khảo [blog này](https://blog.apollographql.com/graphql-explained-5844742f195e#.fq5jjdw7t).
+
+Context argument
+- Context là cách bạn truy cập vào các shared connections và fetchers trong resolvers để lấy data.
+
+- `Context` là đối số thứ 3 được truyền vào mỗi resolver. Điều này rất hữu dụng để truyền vào thứ mà resolver cần, như [authentication scope](https://blog.apollographql.com/authorization-in-graphql-452b1c402a9), database connections, và những custom fetch functions. Thêm nữa, nếu bạn sử dụng [dataloaders để bactch requests](https://www.apollographql.com/docs/apollo-server/data/data-sources/#what-about-dataloader) trên các resolvers, bạn có thể attach chúng vào `context` luôn.
+
+- Như một best practice, `context` nên giống nhau cho tất cả resolvers, bất kể là query hay mutation, và resolvers ***không được thay đổi nó (context)***. Điều này đảm bảo tính nhất quán giữa các resolvers, và giúp tăng tốc độ development.
+
+- Để cung cấp một `context` cho resolvers, thêm một `context` object trong contructor của Apollo Server. Constructor này được gọi vs mỗi request, do đó bạn có thể set `context` dựa trên chi tiết mỗi request(như HTTP headers).
+```javascript
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) => ({
+    authScope: getScope(req.headers.authorization)
+  })
+}));
+
+// resolver
+(parent, _, context) => {
+  if(context.authScope !== ADMIN) throw AuthenticationError('not admin');
+  ...
+}
+```
+- Context cũng có thể được tạo bất đồng bộ, để khởi tạo các database connections và những operations khác.
+```javascript
+context: async () => ({
+  db: await client.connect(),
+})
+
+// resolver
+(parent, _, context) => {
+  return context.db.query('SELECT * FROM table_name');
+}
+```
+
+
+
+
+
+
+
 
 
 
