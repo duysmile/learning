@@ -535,15 +535,86 @@ server.listen().then(({ url }) => {
 });
 ```
 
+Tự xây dựng directive cho mình theo hướng dẫn ở  [đây](https://www.apollographql.com/docs/apollo-server/schema/creating-directives/)
 
+### Implementing directives
 
+Implementing schema directives
+- Vì tài liệu GraphQL ko thảo luận bất cứ chiến lược cụ thể nào cho directives, điều này làm cho mỗi GraphQL Server framework phải tự expose API để implement những directives mới.
 
+- Nếu bạn đang dùng Apollo Server, và package `graphql-tools`, có thể cung cấp những công cụ mạnh mẽ để implementing directive syntax: class `SchemaDirectiveVisitor`.
 
+- Để implement một schema directive dùng `SchemaDirectiveVisitor`, đơn giản chỉ cần tạo một subclass của `SchemaDirectiveVisitor` và overrides một trong nhiều phương thức visitor sau:
+  - `visitSchema(schema: GraphQLSchema)`
+  - `visitScalar(scalar: GraphQLScalarType)`
+  - `visitObject(object: GraphQLObjectType)`
+  - `visitFieldDefinition(field: GraphQLField<any, any>)`
+  - `visitArgumentDefinition(argument: GraphQLArgument)`
+  - `visitInterface(iface: GraphQLInterfaceType)`
+  - `visitUnion(union: GraphQLUnionType)`
+  - `visitEnum(type: GraphQLEnumType)`
+  - `visitEnumValue(value: GraphQLEnumType)`
+  - `visitInputObject(object: GraphQLInputObjectType)`
+  - `visitInputFieldDefinition(field: GraphQLInputField)`
 
+- Bằng việc override phương thức như `visitObject`, một subclass của SchemaDirectiveVisitor thể hiện sự quan tâm(expresses interest) đến các loại schema nhất định như `GraphQLObjectType`(loại tham số đầu tiên của `visitObject`).
 
+- Tên của những method này tương ứng với những vị trí mà một directive có thể được sử dụng trong schema. Ví dụ, vị trí `INPUT_FIELD_DEFINITION` được xử lí bởi visitInputFieldDefinition.
 
+- Đây là một ví dụ về việc implement `@deprecated` directive:
+```javascript
+const { SchemaDirectiveVisitor } = require('apollo-server');
 
+class DeprecatedDirective extends SchemaDirectiveVisitor {
+  public visitFieldDefinition(field: GraphQLField<any, any>) {
+    field.isDeprecated = true;
+    field.deprecationReason = this.args.reason;
+  }
+  
+  public visitEnumValue(value: GraphQLEnumValue) {
+    value.isDeprecated = true;
+    value.deprecationReason = this.args.reason;
+  }
+}
+```
 
+Để apply phần implementation trên vào schema với `@deprecated` directive, chỉ cần đơn giản là pass `DeprecatedDirective` class  vào constructor của Apollo Server thông qua option `schemaDirectives`:
+```javascript
+const { ApolloServer, gql } = require('apollo-server');
+
+const typeDefs = gql `
+  type ExampleType {
+    newField: String
+    oldField: String @deprecated(reason: "Use \'newField\'.")
+  }
+`;
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  schemaDirectives: {
+    deprecated: DeprecatedDirective
+  }
+});
+
+server.listen().then(({ url }) => {
+  console.log(`Server ready at ${url}`);
+});
+```
+
+Thay vào đó, nếu bạn muốn modify một schema object đã tồn tại, bạn có thể dùng interface `SchemaDirectiveVisitor.visitSchemaDirectives` trực tiếp.
+```javascript
+SchemaDirectiveVisitor.visitShemaDirectives(schema, {
+  deprecated: DeprecatedDirective
+});
+```
+ Lưu ý là một subclass của `SchemaDirectiveVisitor` có thể được khởi tạo nhiều lần để visit nhiều chỗ khác nhau của `@deprecated` directive. Đó là lý do tại sao bạn cung cấp 1 class chớ k phải một thực thể của class đó.
+ 
+ Nếu vì một số lí do mà bạn có một schema dùng tên khác cho `@deprecated` directive, nhưng bạn muốn dùng chung implementation thì hoàn toàn có thể đc. Cùng một class `DepreactedDirective` có thể pass vào một tên directive khác, đơn giản chỉ cần đổi cái key trong object `schemaDirectives` được pass vô chô constructor của Apollo Server.
+
+[Xem thêm ví dụ](https://www.apollographql.com/docs/apollo-server/schema/creating-directives/#uppercasing-strings)
+
+### Fetching data with resolvers
 
 
 
