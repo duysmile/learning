@@ -739,13 +739,97 @@ context: async () => ({
 }
 ```
 
+Default resolver
+- Resolvers ko cần thiết cho tất cả các type, vì Apollo Server cung cấp một default có thể thực hiện 2 actions phụ thuộc vào nội dung của `parent`:
+1. Trả về thuộc tính của `parent` với các trường liên quan.
+2. Goị 1 function ở `parent` với các tên trường liên quan và cung cấp những tham số resolver như là arguments.
 
+- Trong schema dưới đây, trường `title` của `Book` không cần một resolver nếu kết quả của `books` resolver cung cấp một list các object đã chứa một trường `title`.
+```graphql
+type Book {
+  title: String
+}
 
+type Author {
+  books: [Book]
+}
+```
 
+Modularizing resolvers (tách module)
+- Chúng ta có thể thực hiện cùng một module với các resolvers bằng cách truyền qua nhiều resolver object và liên kết chúng lại với hàm `merge` của Lodash hoặc là những hàm tương đương:
+```javascript
+// comment.js
+const resolvers = {
+  Comment: { ... }
+}
 
+export resolvers;
+```
 
+```javascript
+// post.js
+const { merge } = require('lodash');
 
+const Comment = require('./comment');
+const resolvers = merge({
+  Post: { ... }
+}, Comment.resolvers);
 
+export resolvers;
+```
 
+```javascript
+// schema.js
+const { merge } = require('lodash');
+const Post = require('./post.js');
 
+// Merge all of the resolver objects together
+const resolvers = merge({
+  Query: { ... }
+}, Post.resolvers);
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
+
+server.listen().then(({ url }) => {
+  console.log(`🚀 Server ready at ${url}`)
+});
+```
+
+Sending queries
+- Một khi đã hoàn thành resolver map, đây là lúc bắt đầu test lại những queries trong GraphQL Playground.
+
+Naming operations
+- Khi send queries hay mutations trong ví dụ trên, chúng ta có thể dùng `query { ... }` hoặc `mutation { ... }`. Mọi thứ đều rất ổn nhưng chúng ta nên đặt tên để để nhận biết và debug hoặc là tổng hợp những operations tương tự nhau để  đo lường hiệu suất ứng dụng, ví dụ khi dùng [Apollo Graph Manager](https://engine.apollographql.com/) để monitor 1 API.
+
+-Operations có thể được đặt tên bằng cách đặt một định danh sau `query` hoặc `mutation`, chúng ta có thể tạo `HomeBookListing` như sau:
+```javascript
+query HomeBookListing {
+  getBooks {
+    title
+  }
+}
+```
+
+Queries with variables
+- Trong ví dụ trên chúng ta dùng các giá trị cố định, với GraphQL chúng ta có thể cung cấp các biến trong queries để có thể thay đổi các giá trị khi queries đơn giản và hiệu quả, dễ quản lí hơn. Ví dụ như thế này:
+
+```graphql
+mutation HomeQuickAddBook($title: String, $author: String = "Anonymous") {
+  addBook(title: $title, author: $author) {
+    title
+  }
+}
+```
+
+Ở GraphQL clients, như [Apollo Client](https://www.apollographql.com/docs/react/), quan tâm đến việc gửi biến tới server tách biệt với operation:
+```graphql
+{
+  "query": "...",
+  "variables": { "title": "Green Eggs and Ham", "author": "Dr. Seuss" }
+}
+```
+- Ch
 
