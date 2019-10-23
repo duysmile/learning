@@ -1081,8 +1081,12 @@ Implement your own cache backend
 
 ### Error handling
 
+- Apollo Server cung cấp một collection những lỗi được định nghĩa sẵn, bao gồm `AuthenticationError`, `ForbiddenError`, `UserInputError`, và `ApolloError`. Những lỗi này được thiết kế để tăng cường các lỗi được throw trước và trong khi thực hiện GraphQL, khiến cho việc debug tích hợp Apollo Server dễ dàng hơn và làm cho client biết phải làm gì khi gặp lỗi.
 
+- Khi một lỗi xảy ra trong Apollo Server cả trong và ngoài resolvers, mỗi lỗi trong mảng `errors` gồm một `extensions` object chứa thông tin được thêm bởi Apollo Server.
 
+Default information
+- ...
 
 
 
