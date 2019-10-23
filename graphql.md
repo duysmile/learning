@@ -1008,12 +1008,78 @@ Query: {
 ```
 
 What about DataLoader?
-...
+- [DataLoader](https://github.com/graphql/dataloader) được tạo ra bởi Facebook với một vài trường hợp sử dụng cụ thể: deduplicating và batching object loads từ 1 data store. Nó cung cấp một memoization cache, nhằm tránh load cùng một đối tượng nhiều lần trong suốt 1 single GraphQL request, và nó kết hợp load những thứ xảy ra trong một tick của event loop thành 1 batched request - mà request đó fetch nhiều object cùng 1 lúc.
 
+- Mặc dù DataLoader rất tuyệt trong trường hợp ày, những nó sẽ ko hữu ích mấy khi load data từ REST APIs bởi vì tính năng chính của nó là `batching`, ko phải `caching`. 
 
+Batching
+- Hầu hết REST APIs ko hỗ trợ batching, và nếu mà có, việc dùng 1 batched endpoint có thể thực sự k tốt cho việc caching. Khi bạn fetch data trong 1 batch request, response bạn nhận được là sự kết hợp những tài nguyên bạn yêu cầu. Nếu bạn k request cùng một kết hợp đó lần nữa, thì request tiếp theo cho cùng tài nguyên đó sẽ k thể được lấy từ cache. Và đề nghị của chúng tôi là hạn chế việc batching cho requests ko thể cached. Bạn có thể thực sự thấy lợi thế của DataLoader như là một private implementation detail trong bộ data source của bạn.
+```javascript
+class PersonalizationAPI extends RESTDataSource {
+  constructor() {
+    super(); 
+    this.baseURL = 'https://personalization-api.example.com';
+  }
+  
+  willSendRequest(request) {
+    request.headers.set.('Authorization', this.context.token);
+  }
+  
+  private progressLoader = new DataLoader(async (ids) => {
+    const progressList = await this.get('progress', {
+      ids: ids.join(',');
+    });
+    
+    return ids.map(id => {
+      progressList.find(progress => progress.id. === id);
+    };
+  });
+  
+  async getProgressFor(id) {
+    return this.progressLoader.load(id);
+  }
+}
+```
 
+Using Memcached/Redis as a cache storage backend
+- Mặc định thì resource caching sẽ dùng in-memory LRU cahce. Khi chạy nhiều server, bạn sẽ muốn dùng một shared cache backend hơn. Đó là lí do mà Apollo Server cũng support luôn việc sử dụng Memcached hoặc Redis như một cache store thông qua [apollo-server-cache-memcached](https://www.npmjs.com/package/apollo-server-cache-memcached) và [apollo-server-cache-redis](https://www.npmjs.com/package/apollo-server-cache-redis). Bạn có thể chọn dùng cái nào tùy và sau đó truyền nó vào constructor của `ApolloServer`:
 
+```javascript
+const { MemcachedCache } = require('apollo-server-cache-memcached');
 
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  cache: new MemcachedCache(
+    ['memcached-server-1', 'memcached-server-2'],
+    { retries: 10, retry: 10000 }
+  ),
+  dataSources: () => ({
+    moviesAPI: new MovieAPI()
+  })
+});
+```
+
+```javascript
+const { RedisCache } = require('apollo-server-cache-redis');
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  cache: new RedisCache({
+    host: 'redis-server',
+    // Options are passed through to the Redis client
+  }),
+  dataSources: () => ({
+    moviesAPI: new MoviesAPI(),
+  }),
+});
+```
+
+Implement your own cache backend
+- Apollo Server tạo một `KeyValueCache` interface để bạn có thể dùng để implement connectors tới những data stores khác, hoặc để optimize những query đặc trưng của ứng dụng. Xem thêm ở [apollo-server-caching](https://www.npmjs.com/package/apollo-server-caching).
+
+### Error handling
 
 
 
