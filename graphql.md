@@ -831,5 +831,198 @@ mutation HomeQuickAddBook($title: String, $author: String = "Anonymous") {
   "variables": { "title": "Green Eggs and Ham", "author": "Dr. Seuss" }
 }
 ```
-- Ch
+### Data sources
+Caching partial query results
+------
+Data sources là những classes đóng gói việc fetching data từ một dịch vụ cụ thể, với những phần xây dựng sẵn cho caching, deduplication, và xử lí lỗi. Bạn viết code cụ thể để tương tác với backend, và Apollo Server sẽ lo phần còn lại.
+
+REST Data Source
+- `RESTDataSource` có nhiệm vụ fetching data từ 1 REST API.
+- Để bắt đầu thì cài REST data source package:
+> npm install apollo-datasource-rest
+
+- Để định nghĩa một data source, extend `RESTDataSource` class và implement phương thức data fetching mà những resolvers yêu cầu. Những cái implementation của mấy cái methods ni có thể gọi các phương thức được tich hợp trong class `RESTDataSource` để thực thi HTTP requests, làm cho việc build up query parameters, parse JSON kết quả, và xử lí lỗi dễ dàng hơn.
+
+```javascript
+const { RESTDataSource } = require('apollo-datasource-rest');
+
+class MoviesAPI extends RESTDataSource {
+  constructor() {
+    super();
+    this.baseURL = 'https://movies-api.example.com/';
+  }
+  
+  async getMovie(id) {
+    return this.get(`movies/${id}`);
+  }
+  
+  async getMostViewedMovies(limit = 10) {
+    const data = await this.get('movies', {
+      per_page: limit,
+      order_by: 'most_viewed'
+    });
+    
+    return data.results;
+  }
+}
+```
+
+HTTP Methods
+- Phương thức `get` trong `RESTDataSource` tạo một HTTP `GET` request. Tương tự, có những phương thức được xây dựng sẵn như `POST`, `PUT`, `PATCH`, và `DELETE`.
+
+```javascript
+class MovieAPI extends RESTDataSource {
+  constructor() {
+    super();
+    this.baseURL = 'https://movies-api.examples.com/';
+  }
+  
+  async postMovie(movie) {
+    return this.post(
+      `movies`,
+      movie
+    );
+  }
+  
+  async newMovie(movie) {
+    return this.put(
+      'movies',
+      movie
+    );
+  }
+  
+  async updateMovie(movie) {
+    return this.patch(
+        `movies`,
+        { id: movie.id, movie }
+    );
+  }
+  
+  async deleteMovie(movie) {
+    return this.delete(
+      `movies/${movie.id}`
+    );
+  }
+}
+```
+
+- Tất cả những HTTP helper functions(`get`, `put`, `post`, `patch`, và `delete`) chấp nhận một tham số thứ 3 là `options`, có thể được dùng để set headers hoặc referrers. Để hiểu rõ hơn về những options thì xem thêm ở [đây](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Parameters).
+
+Intercepting fetches
+- Data sources cho phép bạn chặn fetch để set header, query parameters, hoặc là thêm vài thay đổi khác với outgoing requests. Việc này hầu hết thường được dùng cho authorization hoặc là những common áp dụng cho tất cả các requests. Data sources cũng truy cập vòa GraphQL context, một nơi tuyệt vời để lưu trữ user token, hoặc những thông tin khác bạn cần.
+
+- Bạn có thể dễ dàng set header trên mỗi request:
+```javascript
+class PersonalizationAPI extends RESTDataSource {
+  willSendRequest(request) {
+    request.headers.set('Authorization', this.context.token);
+  }
+}
+```
+- Hoặc là thêm một query parameter:
+```javascript
+class PersonalizationAPI extends RESTDataSource {
+  willSendRequest(request) {
+    request.params.set('api_key', this.context.token);
+  }
+}
+```
+- Nếu bạn đang dùng TypeScript, thì cần đảm bảo là import `RequestOptions` type:
+```javascript
+import { RESTDataSource, RequestOptions } from 'apollo-data-source';
+
+class PersonalizationAPI extends RESTDataSource {
+  baseURL = 'https://personalization-api.example.com/';
+
+  willSendRequest(request: RequestOptions) {
+    request.headers.set('Authorization', this.context.token);
+  }
+}
+```
+
+Resolving URLs dynamically
+-Trong một vài trường hợp, bạn sẽ muốn set URL dựa vào môi trường hoặc những context khác. Có thể dùng getter này:
+
+```javascript
+get baseURL() {
+  if (this.context.env === 'development') {
+    return 'https://movies-api-dev.example.com/';
+  } else {
+    return 'https://movies-api.example.com/';
+  }
+}
+```
+
+- Nếu mà bạn cần custom thêm, như là khả năng resolve URL bất đồng bộ, bạn có thể override `resolveURL`:
+
+```javascript
+async resolveURL(request: RequestOptions) {
+  if (!this.baseURL) {
+    const addresses = await resolveSrv(request.path.split("/")[1] + ".service.consul");
+    this.baseUrl = addresses[0];
+  }
+  
+  return super.resolveURL(request);
+}
+```
+
+Community data sources
+- `SQLDataSource` từ [datasource-sql]()
+- `MongoDataSource` từ [apollo-datasource-mongodb]()
+
+Accessing data sources from resolvers
+- Để truy cập data sources trong resolvers, bạn có thể thêm options vào constructor `ApolloServer`:
+```javascript
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  dataSources: () => {
+    return {
+      moviesAPI: new MoviesAPI(),
+      personalizationAPI: new PersonalizationAPI()
+    };
+  },
+  context: () => {
+    return {
+      token: 'foo'
+    };
+  }
+});
+```
+
+-Apollo Server sẽ đặt data sources vào context cho mỗi request, để bạn có thể truy cập chúng từ resolvers. Việc này cũng cho phép việc data sources có thể truy cập vào context (Lí do mà ko đặt data sources trong context vì nó có thể tạo ra một sự phụ thuộc vòng tròn).
+
+- Từ resolvers, chúng ta có thể truy cập data source và trả về kết quả:
+```javascript
+Query: {
+  movie: async(_source, { id }, { dataSources }) => {
+    return dataSources.moviesAPI.getMovie(id);
+  },
+  mostViewedMovies: async (_source, _args, { dataSources }) => {
+    return dataSources.moviesAPI.getMostViewedMovies();
+  },
+  favorites: async (_source, _args, { dataSources }) => {
+    return dataSources.personalizationAPI.getFavorites();
+  }
+}
+```
+
+What about DataLoader?
+...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
