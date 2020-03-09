@@ -1,4 +1,26 @@
-# Javascript Learning 
+# Javascript Learning
+- Data types: number (max  2^53 - 1), BigInt (vd: 10n, kết thúc là `n` là kiểu BigInt), string, symbol, object
+  - typeof null = object nhưng kiểu dữ liệu của null là null, kiểu dữ liệu của undefined là undefined.
+  - typeof array = object
+- Object: kiểm tra property của object dùng toán tử `in` 
+```javascript
+var user = {
+  name: 'Duy',
+};
+console.log('name' in user); // true
+console.log('age' in user); // false
+```
+- Function:
+  - IIFE (Immediately invoked function expression): hàm thực thi ngay lập tức
+  ```javascript
+  (function() {
+    console.log('Hi');
+  })();
+  ```
+  - Pure function:
+    - Với cùng một đầu vào thì kết quả đầu ra luôn giống nhau
+    - Không có side-effect
+    - Lợi ích: dễ test, dễ debug, dễ đoán kết quả chương trình
 - Hoisting
 - let, const, var:
   - declaration
