@@ -1,4 +1,7 @@
 ### Basic:
+#### Terminal
+- `Ctrl + Shift + '+'` = increase font-size
+- `Ctrl + W + '-'` = decrease font-size
 
 #### Move
 - `h` = (ArrowLeft)
@@ -38,6 +41,36 @@
 - `:w` = save file
 - `:w!` = force save file (override)
 - `:wq` = save and exit
+
+#### Open multiple files
+- `vim <file1> <file2> ...` = open multiple files
+  - `:next` = move to next file
+  - `:previous` = move to previous file
+- `vim -o/-O <file1> <file2> ...` = open multiple files in vertical/horizontal split
+- `:split <file2>` or `:sp <file2>` = split file2 in horizotal when in working mode
+- `:vsplit <file2>` or `:vsp <file2>` = split file2 in vertical when in working mode
+  - `<line-vertical/line-horizontal>sp/vsp <file2>` = split file2 in a number of line in vertical or horizontal
+  - `set splitbelow/splitright` = open split panes in bottom/right
+- `Ctrl w =` =  Normalize file size panes resizing terminal
+- `Ctrl w r` = Swap top/bottom left/right split
+- `Ctrl w t` = break out current window into new tabview
+- `Ctrl w o` = close all windows in current view but the current one
+#### Navigate between file
+- `Ctrl W <direction: H - left, J - down, K - up , L - right`: move to split file according direction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
