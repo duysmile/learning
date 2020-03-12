@@ -58,6 +58,10 @@
 #### Navigate between file
 - `Ctrl W <direction: H - left, J - down, K - up , L - right`: move to split file according direction
 
+#### Undo/Redo
+- `:u` = undo 1 action
+- `:<n>u` = undo n actions
+- `Ctrl R` = redo
 
 
 
