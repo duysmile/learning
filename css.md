@@ -98,3 +98,4 @@
   - px: pixel
   - em: ti le vs parent element
   - rem: ti le vs root element (root === html)
+- box-sizing: border-box -> làm cho padding không thay đổi kích thước của element.
