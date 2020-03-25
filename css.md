@@ -100,3 +100,4 @@
   - rem: ti le vs root element (root === html)
 - box-sizing: border-box -> làm cho padding không thay đổi kích thước của element.
 - Animation: tympanus.net
+- transition: easings.net
