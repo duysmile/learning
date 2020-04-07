@@ -65,6 +65,9 @@
 
   - `free -g` to display output in GB
 
+- `who` to list all current users logged in Linux system.
+  - `whoami` to show your username
+  - `w` to show more info about you
 
 
 
