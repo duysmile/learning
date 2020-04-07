@@ -39,6 +39,7 @@
 ![Task Manager](https://www.guru99.com/images/ps.png)
   
   - `ps PID`
+  - `pstree`
 
 - Terminates a running process: `kill PID`
 - Find a PID of a process: `pidof <process name>`
