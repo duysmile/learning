@@ -18,9 +18,21 @@
 ![List process](https://www.guru99.com/images/top.png)
 
   - press `q` to quit
+  - press `d` then type your interval you want to `top` update process
+  - press `u` then type `username` you want to track
+  - press `k` then type `PID` of process you want to kill
   - Detail table of process:
 
 ![Detail Process](https://i.ibb.co/YRN8rRY/Screenshot-from-2020-04-03-17-52-29.png)
+
+- `htop`: it's a newer version of `top`
+
+![htop](https://miro.medium.com/max/1400/1*lAAYOlCkrmhYkbXLQ05Ovg.png)
+
+  - some options can be used with `htop`:
+    - `-d` Delay between updates, in tenths of seconds
+    - `-u` USERNAME to show only specific user processes
+    - `-t` show processes in tree view
 
 - Task Manager: `ps ux` - ps stands for 'process status'
 
