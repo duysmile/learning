@@ -1,5 +1,9 @@
 # Linux
 
+## GUI
+
+- `Super` (Start in window) + `ArrowUp`: to maximize screen app.
+
 ## Process Management
 - Run a process foreground -> press `Ctrl + Z` -> type `bg` -> to make it run background.
 
@@ -68,6 +72,8 @@
 - `who` to list all current users logged in Linux system.
   - `whoami` to show your username
   - `w` to show more info about you
+  
+- `whereis` to file path of program. Eg: `whereis google-chrome`
 
 
 
