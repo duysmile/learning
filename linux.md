@@ -1,8 +1,10 @@
 # Linux
 
 ## GUI
-
 - `Super` (Start in window) + `ArrowUp`: to maximize screen app.
+
+## Normal
+- `source <path-file>`: reload that file in terminal (Eg: any configuration file and no need to relaunch terminal)
 
 ## Process Management
 - Run a process foreground -> press `Ctrl + Z` -> type `bg` -> to make it run background.
