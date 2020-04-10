@@ -50,7 +50,8 @@
 - Terminates a running process: `kill PID`
 - Find a PID of a process: `pidof <process name>`
 
-- Set priority to process (value from -20 - 19): Linux can run a lot of processes at a time, which can slow down the speed of some high priority processes and result in poor performance. To avoid this, you can tell your machine to prioritize processes as per your requirements. Default value of process is 0.
+- Set priority to process (value from -20 -> 19): Linux can run a lot of processes at a time, which can slow down the speed of some high priority processes and result in poor performance. To avoid this, you can tell your machine to prioritize processes as per your requirements.
+  - A value of -19 is very high priority, while a value of 19 is very low priority. A value of 0 is the default priority.
   - Set nice value to process `nice -n 'Nice value' process name`
   
 ![Nice](https://www.guru99.com/images/changing_niceness.png)
@@ -76,6 +77,10 @@
   - `w` to show more info about you
   
 - `whereis` to file path of program. Eg: `whereis google-chrome`
+- `pgrep` to find PID of process by name. Eg: `pgrep firefox`
+- `pkill` to kill process by name
+- `killall` to kill all processes by name
+- `xkill` to kill graphical program. Run it and your cursor will turn into an x sign. Click a program’s window to kill that program. If you don’t want to kill a program, you can back out of xkill by right-clicking instead. You don’t have to run this command from a terminal — you can also press Alt-F2, type `xkill` and press Enter to use it from a graphical desktop.
 
 
 
