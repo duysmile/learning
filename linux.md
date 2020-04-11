@@ -8,6 +8,8 @@
 
 ## Process Management
 - Run a process foreground -> press `Ctrl + Z` -> type `bg` -> to make it run background.
+- Another way to run make a process run background is using the symbol `&`. Eg: `cloundcmd &`
+- Use `jobs` command to see list processes sent to background.
 
 ![Foreground to background](https://www.guru99.com/images/bg.jpg)
 
@@ -81,6 +83,18 @@
 - `pkill` to kill process by name, kill all processes that matches the keyword search, before using pkil you should check all processes matches that keyword by using `pgrep -l <process-name>`
 - `killall` to kill all processes by name
 - `xkill` to kill graphical program. Run it and your cursor will turn into an x sign. Click a program’s window to kill that program. If you don’t want to kill a program, you can back out of xkill by right-clicking instead. You don’t have to run this command from a terminal — you can also press Alt-F2, type `xkill` and press Enter to use it from a graphical desktop.
+
+- `pidof` to find pid ò a process
+- `echo $$` to find PID of current shell
+- `echo $PPID` to find parent process ID of current shell
+
+
+
+
+
+
+
+
 
 
 
