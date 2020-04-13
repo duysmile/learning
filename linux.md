@@ -10,6 +10,27 @@
 - Run a process foreground -> press `Ctrl + Z` -> type `bg` -> to make it run background.
 - Another way to run make a process run background is using the symbol `&`. Eg: `cloundcmd &`
 - Use `jobs` command to see list processes sent to background.
+- Keeping process after exiting its terminal `disown`
+```shell
+$ sudo rsync Templates/* /var/www/html/files/ &
+$ jobs
+$ disown -h %1
+$ jobs
+```
+![Result](https://www.tecmint.com/wp-content/uploads/2016/10/Keep-Linux-Processes-Running.png)
+
+- `nohup` can also keep process to continue running in bg when user exits a shell
+```shell
+$ nohup tar -czf iso.tar.gz Templates/* &
+$ jobs
+```
+
+![Result](https://www.tecmint.com/wp-content/uploads/2016/10/Put-Linux-Process-in-Background.png)
+
+- Detach a Linux process from controlling terminal 
+> $ firefox </dev/null &>/dev/null &
+  
+  - In Linux, /dev/null is a special device file which writes-off all data written to it, in the command above, input is read from and output is sent to /dev/null.
 
 ![Foreground to background](https://www.guru99.com/images/bg.jpg)
 
