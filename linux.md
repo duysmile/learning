@@ -47,9 +47,17 @@ $ jobs
 ![List process](https://www.guru99.com/images/top.png)
 
   - press `q` to quit
-  - press `d` then type your interval you want to `top` update process
-  - press `u` then type `username` you want to track
+  - press `d` then type your interval you want to `top` update process (default 3s)
+  - press `u` then type `username` you want to track or type `top -u duy21`
   - press `k` then type `PID` of process you want to kill
+  - press `Shift + o` to sort processes by field
+  - press `z` to highlight running process
+  - press `c` to show absolute path of processes
+  - press `Shift + p` to sort processes as per **CPU** utilization
+  - press `r` to change priority of process also called Renice.
+  - press `h` to show help
+  - to automatically exit after <time> number of repetition `# top -n 10`
+  - to save output of top -> `# top -n 1 -b > top-output.txt`
   - Detail table of process:
 
 ![Detail Process](https://i.ibb.co/YRN8rRY/Screenshot-from-2020-04-03-17-52-29.png)
