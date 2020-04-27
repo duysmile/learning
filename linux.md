@@ -3,8 +3,16 @@
 ## GUI
 - `Super` (Start in window) + `ArrowUp`: to maximize screen app.
 
+## Terminal
+- `Ctrl W`: remove a word from right to left.
+- `Ctrl L`: same `clear` command
+- `Ctrl <Left/Right/Top/Bottom>`: move through a word
+- `Ctrl Shift W` or `Ctrl D`: close current tab terminal
+- `history`: show all used commands
+
 ## Normal
 - `source <path-file>`: reload that file in terminal (Eg: any configuration file and no need to relaunch terminal)
+- `pwd`: print working directory -> print current directory in terminal
 
 ## Process Management
 - Run a process foreground -> press `Ctrl + Z` -> type `bg` -> to make it run background.
