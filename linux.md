@@ -2,6 +2,15 @@
 
 ## GUI
 - `Super` (Start in window) + `ArrowUp`: to maximize screen app.
+- Các phím tắt thường sử dụng trong Terminator:
+  - `Ctrl+Shift+O` chia terminal theo chiều ngang
+  - `Ctrl+Shift+E` chia terminal theo chiều dọc
+  - `Ctrl+Shift+Right` di chuyển qua cửa sổ bên phải
+  - `Ctrl+Shift+S` Ẩn / hiện thanh cuộn
+  - `Ctrl+Shift+N` hoặc `Ctrl+Tab` chuyển cửa sổ theo thứ tự từ trái qua phải từ trên xuống dưới
+  - `Ctrl+Shift+P` hoặc `Ctrl+Shift+Tab` chuyển cửa sổ theo tứ tự từ phải qua trái từ dưới lên trên
+  - `Alt+UpMove` chuyển qua khung lệnh phía trên khung cửa sổ hiện tại
+
 
 ## Terminal
 - `Ctrl W`: remove a word from right to left.
@@ -13,7 +22,9 @@
 ## Normal
 - `source <path-file>`: reload that file in terminal (Eg: any configuration file and no need to relaunch terminal)
 - `pwd`: print working directory -> print current directory in terminal
-
+- `ls`: list -> list all file and directory in current path
+  - `-a`: all
+- `man <command>`: show all guide of this command
 ## Process Management
 - Run a process foreground -> press `Ctrl + Z` -> type `bg` -> to make it run background.
 - Another way to run make a process run background is using the symbol `&`. Eg: `cloundcmd &`
