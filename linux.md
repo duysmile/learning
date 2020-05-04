@@ -20,6 +20,7 @@
 - `history`: show all used commands
 
 ## Normal
+- `/etc/apt/sources.list`: source list apt
 - `source <path-file>`: reload that file in terminal (Eg: any configuration file and no need to relaunch terminal)
 - `pwd`: print working directory -> print current directory in terminal
 - `ls`: list -> list all file and directory in current path
