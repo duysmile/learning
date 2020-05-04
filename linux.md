@@ -25,6 +25,13 @@
 - `ls`: list -> list all file and directory in current path
   - `-a`: all
 - `man <command>`: show all guide of this command
+- `tee`: copy standard input to each file, and also to standard output
+  - `[command] | tee -a [file]`
+  - Eg: `ping google.com | tee output.txt`
+  
+  ![tee](https://www.howtoforge.com/images/command-tutorial/ping-with-tee.png?ezimgfmt=rs:500x327/rscb1/ng:webp/ngcb1)
+- `wc -l`: count entries
+  - Combine with `tee`: `ls | tee | wc -l` -> show number of files in current dir
 ## Process Management
 - Run a process foreground -> press `Ctrl + Z` -> type `bg` -> to make it run background.
 - Another way to run make a process run background is using the symbol `&`. Eg: `cloundcmd &`
