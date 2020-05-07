@@ -1,4 +1,5 @@
 # Javascript Learning
+- Event listener: During event propagation, there are 3 phases: capturing, target, and bubbling. By default, event handlers are executed in the bubbling phase (unless you set useCapture to true). It goes from the deepest nested element outwards.
 - Data types: number (max  2^53 - 1), BigInt (vd: 10n, kết thúc là `n` là kiểu BigInt), string, symbol, object
   - typeof null = object nhưng kiểu dữ liệu của null là null, kiểu dữ liệu của undefined là undefined.
   - typeof array = object
