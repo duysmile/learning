@@ -97,4 +97,9 @@ Còn với những đối tượng ko thay đổi (immutable) ko có khác biệ
 
 - Import vs Require
   - Với require thì module được load ngay ở dòng nó được gọi
-  - Với import thì module được load đầu tiên trong file và những dòng code khác được thực th
+  - Với import thì module được load đầu tiên trong file và những dòng code khác được thực thi
+  
+- Symbol
+  - Mỗi Symbol là duy nhất, giá trị tham số được truyền vào `Symbol(param)` được dùng để làm mô tả cho Symbol.
+- method `padStart(<length>)`
+  - Dùng để th
