@@ -94,3 +94,7 @@ print(m)
 Kết quả là [], bởi vì câu lệnh list = [1] gán lại một list mới cho biến list chứ ko phải cho địa chỉ mà nó tham chiếu đến.
 
 Còn với những đối tượng ko thay đổi (immutable) ko có khác biệt nào thực sự giữa call by sharing và call by value cả, ngoại trừ nếu object identity có trong ngôn ngữ. Cách sử dụng của call by sharing với những mutable object là một sự thay thế cho tham số input/output: tham số (parameter) ko được gán(đối số không được ghi đè và object identity ko thay đổi), nhưng object(đối số) là có thể thay đổi (mutated).
+
+- Import vs Require
+  - Với require thì module được load ngay ở dòng nó được gọi
+  - Với import thì module được load đầu tiên trong file và những dòng code khác được thực th
