@@ -13,3 +13,8 @@ Ví dụ:
 db.collection.find({
   $where: "this.name === 'abc'"
 })
+
+- $inc: tăng một filed lên n đơn vị
+- $push: đẩy vào một array
+- $pull: lấy ra từ array
+- $addToSet: thêm vào và k duplicate trong array
