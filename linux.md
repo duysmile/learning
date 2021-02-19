@@ -18,6 +18,7 @@
 - `Ctrl <Left/Right/Top/Bottom>`: move through a word
 - `Ctrl Shift W` or `Ctrl D`: close current tab terminal
 - `history`: show all used commands
+- `Ctrl R`: show history of current command
 
 ## Normal
 - `/etc/apt/sources.list`: source list apt
