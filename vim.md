@@ -31,6 +31,7 @@
 - `?<key-word>` = search up with keyword
 - `n` = continue searching
 - `Ctrl O` = return back to current point
+- `Ctrl I` = goes forward
 - `%` = to find start/close of character `(`,`)`,`[`,`]`, ... 
 
 #### Search & Replace
@@ -50,7 +51,7 @@ motion can be `w`, `e`, `$`
 
 #### Copy/Paste
 - `y` = copy
-- `p` = patse (after `dd`: paste a line deleted before)
+- `p` = patse (after `dd`: paste a line deleted before) below cursor
 
 #### Save and exit
 - `ESC` = exit mode insert or replace
