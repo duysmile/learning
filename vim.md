@@ -11,7 +11,7 @@
 
 - `0` = Move to start of line
 - `$` = Move to end of line
-- `gg` = Move to start of file
+- `gg` or `0` = Move to start of file
 - `G` = Move to end of file
 - `<line-number>G` = Move to \<line-number\> line
 - `Ctrl g` = Show info of current line, total line
@@ -49,7 +49,7 @@ motion can be `w`, `e`, `$`
 - `dd` = remove a line (like `Ctrl X` a line)
 
 #### Copy/Paste
-- `yy` = copy
+- `y` = copy
 - `p` = patse (after `dd`: paste a line deleted before)
 
 #### Save and exit
@@ -77,17 +77,22 @@ motion can be `w`, `e`, `$`
 - `Ctrl W <direction: H - left, J - down, K - up , L - right`: move to split file according direction
 
 #### Undo/Redo
-- `:u` = undo 1 action
-- `:<n>u` = undo n actions
+- `u` = undo 1 action
+- `U` = undo the whole line
+- `<n>u` = undo n actions
 - `Ctrl R` = redo
 
 #### Delete and move to insert mode `c motion`
 - `c w` = delete word and move insert mode
 - `c $` = delete to end of line and move insert mode
 
-
-
-
+#### Combine count
+ operator   [number]   motion
+     where:
+       operator - is what to do, such as  d  for delete
+       [number] - is an optional count to repeat the motion
+       motion   - moves over the text to operate on, such as  w (word),
+                  $ (to the end of line), etc.
 
 
 
