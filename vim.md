@@ -18,6 +18,9 @@
 - `<n>w` = move forward word by word
 - `<n>b` = move backward word by word
 - `<n>e` = move to end of word
+- `Ctrl O` = goes backward
+- `Ctrl I` = goes forward
+- `CTRL-W CTRL-W` = to jump from one window to another.
 
 #### Highlight
 
@@ -30,16 +33,22 @@
 - `/<key-word>` = search down with keyword
 - `?<key-word>` = search up with keyword
 - `n` = continue searching
-- `Ctrl O` = return back to current point
-- `Ctrl I` = goes forward
 - `%` = to find start/close of character `(`,`)`,`[`,`]`, ... 
 
 #### Search & Replace
 - `:s/<word-to-find>/<word-to-replace>/<modifier>`: replace word-to-find to word-to-replace in modifier(eg: g - global, ...) mode 
+- To change every occurrence of a character string between two lines,
+  - type   :#,#s/old/new/g    where #,# are the line numbers of the range
+                               of lines where the substitution is to be done.
+  - Type   :%s/old/new/g      to change every occurrence in the whole file.
+  - Type   :%s/old/new/gc     to find every occurrence in the whole file,
+                               with a prompt whether to substitute or not.
 
 #### Edit content
 - `i` = move to insert mode
+- `a`= move to insert mode with cursor after current cursor
 - `r` = move to replace mode
+- `R` = replace multiple character
 - `x` = delete a character from position of pointer
 - `Shift A` = move to end of line and move to insert mode
 
@@ -52,6 +61,7 @@ motion can be `w`, `e`, `$`
 #### Copy/Paste
 - `y` = copy
 - `p` = patse (after `dd`: paste a line deleted before) below cursor
+- `:r <command or file>`: to retrieve output to current file
 
 #### Save and exit
 - `ESC` = exit mode insert or replace
@@ -96,11 +106,19 @@ motion can be `w`, `e`, `$`
                   $ (to the end of line), etc.
 
 
+#### Execute command
+- `:!<command>`: to execute an external command
 
+#### set options
+- Typing ":set xxx" sets the option "xxx".  Some options are:
+        'ic' 'ignorecase'       ignore upper/lower case when searching
+        'is' 'incsearch'        show partial matches for a search phrase
+        'hls' 'hlsearch'        highlight all matching phrases
+     You can either use the long or the short option name.
 
-
-
-
+#### Show suggest for command
+- Type the start of a command:  :e
+- Press  CTRL-D  and Vim will show a list of commands that start with "e".
 
 
 
