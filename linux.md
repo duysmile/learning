@@ -141,13 +141,13 @@ $ jobs
 - `killall` to kill all processes by name
 - `xkill` to kill graphical program. Run it and your cursor will turn into an x sign. Click a program’s window to kill that program. If you don’t want to kill a program, you can back out of xkill by right-clicking instead. You don’t have to run this command from a terminal — you can also press Alt-F2, type `xkill` and press Enter to use it from a graphical desktop.
 
-- `pidof` to find pid ò a process
+- `pidof` to find pid of a process
 - `echo $$` to find PID of current shell
 - `echo $PPID` to find parent process ID of current shell
 
 
-
-
+### Debug script
+- options `-x` to debug script. Eg: `bash -x hello.sh`
 
 
 
