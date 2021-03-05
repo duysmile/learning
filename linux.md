@@ -195,7 +195,8 @@ File type:
 - s	Socket
 - ?	Some other file type
 
-
+### Command:
+- `tr A-Z a-z <file.txt`: replace all uppercase to lowercase
 
 
 
