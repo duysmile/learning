@@ -201,7 +201,101 @@ File type:
   - `-v`: to search file exclude word
 
 
+### Job handling
+Creating jobs
 
+Để tạo một job, chỉ cần thêm một kí tự & duy nhất và command:
+
+```
+$ sleep 10 &
+[1]20024
+```
+Bạn cũng có thể biến một process đang chạy thành một job bằng cách nhấn Ctrl + z :
+
+```
+$ sleep 10
+^Z
+[1]+  Stopped                 sleep10
+```
+Background và Foreground một process Để đưa Process thành foreground, command fg được sử dụng cùng với %
+
+```$ sleep 10 &
+[1] 20024
+$ fg %1
+sleep 10
+```
+Bây giờ bạn có thể tương tác với process. Để đưa nó trở lại background, bạn có thể sử dụng bg. Do terminal session được cài đặt sẵn, trước tiên bạn cần dừng process bằng cách nhấn Ctrl + z.
+
+```
+$ sleep 10
+^Z
+[1]+ Stopped       sleep 10
+$ bg %1
+[1]+ sleep 10 &
+```
+Nếu bạn chỉ có một proces hoặc đối với process đầu tiên trong danh sách, bạn chỉ cần % là đủ:
+
+```
+$ sleep 10 &
+[1] 20024
+$ fg %
+ \# to bring a process to foreground 'fg %' is also working.
+sleep 10
+```
+hoặc chỉ cần
+
+```
+$ %
+\# laziness knows no boundaries, '%' is also working.
+sleep 10
+```
+Ngoài ra, chỉ cần nhập fg hoặc bg mà không có bất kỳ đối số nào sẽ xử lý job cuối cùng:
+
+```
+$ sleep 20 &
+$ sleep 10 &
+$ fg
+```
+
+```sleep^C
+$ fg
+sleep10
+20
+```
+Killing jobs đang chạy
+
+```
+$ sleep 10 &
+[1] 20024
+$ kill %1
+[1]+ Terminated     sleep 10
+```
+Kill một process cụ thể Có lẽ cách dễ nhất để kill một process đang chạy là chọn nó thông qua tên của nó như trong ví dụ sau, bằng cách sử dụng pkill:
+
+```
+pkill -f test.py
+```
+(hoặc) một cách nữa là sử dụng pgrep để tìm kiếm id process:
+
+```
+kill $(pgrep -f 'python test.py')
+```
+### Kiểm tra xem process nào đang hoạt động ở cổng bất kì
+Để kiếm tra process đang chạy ở cổng 8080 bạn làm cách này:
+
+```
+lsof-i :8080
+```
+
+### List ra các job hiện tại
+```
+$ tail -f /var/log/syslog > log.txt
+[1]+ Stopped       tail -f /var/log/syslog > log.txt
+$ sleep 10 &
+$ jobs
+[1]+ Stopped       tail -f /var/log/syslog > log.txt
+[2]- Running       sleep 10 &
+```
 
 
 
