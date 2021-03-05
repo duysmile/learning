@@ -180,6 +180,21 @@ Explain:
 - Apr 21 03:44	Modification time
 - acpi	File name
 
+File type:
+- -	Regular file
+- b	Block special file
+- c	Character special file
+- C	High performance ("contiguous data") file
+- d	Directory
+- D	Door (special IPC file in Solaris 2.5+ only)
+- l	Symbolic link
+- M	Off-line ("migrated") file (Cray DMF)
+- n	Network special file (HP-UX)
+- p	FIFO (named pipe)
+- P	Port (special system file in Solaris 10+ only)
+- s	Socket
+- ?	Some other file type
+
 
 
 
