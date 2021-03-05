@@ -197,7 +197,8 @@ File type:
 
 ### Command:
 - `tr A-Z a-z <file.txt`: replace all uppercase to lowercase
-
+- `grep`: search file (line) include word
+  - `-v`: to search file exclude word
 
 
 
