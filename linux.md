@@ -149,6 +149,26 @@ $ jobs
 ### Debug script
 - options `-x` to debug script. Eg: `bash -x hello.sh`
 
+### Listing
+- `ls` command
+Option	Description
+- -a, --all	Liệt kê tất cả các mục bao gồm những mục . và ..
+- -A, --almost-all	Liệt kê tất cả các mục trừ mục . và ..
+- -c	Sắp xếp các file theo thời gian thay đổi
+- -d, --directory	Danh sách chỉ gồm các folder
+- -h, --human-readable	Hiển thị kích thước ở định dạng con người có thể đọc được (tức là K, M) (đi kèm option s ví dụ -sh)
+- -H	Tương tự như trên nhưng với tỉ lệ quy đổi là 1000 thay vì 1024
+- -l	Hiển thị nội dung với định dạng long-listing
+- -o	Long -listing format nhưng không có thông tin group
+- -r, --reverse	HIển thị nội dung nhưng với sự sắp xếp ngược lại
+- -s, --size	Danh sách cách tệp với kích thước của từng thành phần
+- -S	Sắp xếp theo kích thước file
+- --sort=WORD	Sắp xếp danh sahcs file theo từ khóa, ví dụ: size, version,status
+- -t	Sắp xếp theo thời gian sửa đổi
+- -u	Sắp xếp theo thời gian truy cập
+- -v	Sắp xếp theo version
+- -1	Danh sách nhưng với 1 file một dòng
+
 
 
 
