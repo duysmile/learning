@@ -169,6 +169,16 @@ Option	Description
 - -v	Sắp xếp theo version
 - -1	Danh sách nhưng với 1 file một dòng
 
+- `ls -l` -> `drwxr-xr-x 3 root root 4096 Apr 21 03:44 acpi`
+Explain:
+- d	File type (xem ở bảng dưới đây)
+- rwxr-xr-x	Permission string
+- 3	Number of hard links
+- root	Owner name
+- root	Owner group
+- 4096	File size in bytes
+- Apr 21 03:44	Modification time
+- acpi	File name
 
 
 
