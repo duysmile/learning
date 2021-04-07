@@ -297,6 +297,13 @@ $ jobs
 [2]- Running       sleep 10 &
 ```
 
+### System signal
+- Shell sử dụng cơ chế giao tiếp của UNIX gọi là signal để truyền thông tin tới process. Khi process nhận một signal nó sẽ dừng việc thực thi, xử lí signal đso và có khả năng sẽ thay đổi luồng thực thi dựa trên thông tin của signal nhận được. Vì vậy, signal được gọi là software interrupts (ngắt phần mềm).
+- Một số signal có thể được handle bởi application nên có thể sẽ hoạt động khác nhau với mỗi process khác nhau
+- Vd: như khi nhấn `Ctrl C` để thoát chương trình, nhưng nhiều khi nó ko hoạt động như chúng ta mong muốn. Lí do là vì khi nhấn `Ctrl C` thì shell sẽ gửi `SIGINT` signal tới process, nên nếu process có cài đặt phần xử lí signal này thì có thể bỏ qua nó và ko ngắt chương trình, thay vào đó phải dùng `SIGQUIT` signal bằng cách gõ `Ctrl \` để stop process.
+- `SIGKILL` là một signal đặc biệt vì nó ko thể được capture bởi process và nó luôn huỷ process ngay lập tức. Nhưng nó cũng có những side effect ko tốt đi kèm như là để những process con "bơ vơ".
+- Có thể xem thêm những signal khác tại [đây](https://en.wikipedia.org/wiki/Signal_(IPC))
+
 
 
 
