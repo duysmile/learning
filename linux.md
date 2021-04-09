@@ -305,10 +305,8 @@ $ jobs
 - Có thể xem thêm những signal khác tại [đây](https://en.wikipedia.org/wiki/Signal_(IPC))
 
 
-
-
-
-
+### ITerm
+- Send key to multiple tab terminal: `Shift Cmd I`
 
 
 
